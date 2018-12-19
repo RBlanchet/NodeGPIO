@@ -1,0 +1,7 @@
+{
+  "PINS": {
+    "AVANCER": 18,
+    "RECULER": 23,
+    "MOTEUR": 24
+  }
+}
