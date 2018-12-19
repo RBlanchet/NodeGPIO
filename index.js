@@ -16,6 +16,7 @@ const config = require('./config.json')
 const GPIO = require('onoff').Gpio
 // Configuration des PINS
 const avancer = new GPIO(config.PINS.AVANCER, 'out')
+const moteur = new GPIO(config.PINS.MOTEUR, 'out')
 
 
 // Vue.js
@@ -34,6 +35,7 @@ io.on('connection', function(socket){
      */
     socket.on('AVANCER', () => {
         console.log('Avancer')
+	moteur.writeSync(1)
         avancer.writeSync(1)
     })
     /**
@@ -41,6 +43,7 @@ io.on('connection', function(socket){
      */
     socket.on('STOP_AVANCER', () => {
         console.log('Arrêt Avancer')
+	moteur.writeSync(0)
         avancer.writeSync(0)
     })
 })

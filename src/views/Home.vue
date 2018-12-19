@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @mouseup="avancerUp" @mousedown="avancerDown">Avancer</button>
+        <div style="background-color: black; width: 200px; height: 200px;" @mouseup="avancerUp" @mousedown="avancerDown"></div>
         <!--<button @click="gauche">Gauche</button>-->
         <!--<button @click="bas">Bas</button>-->
         <!--<button @click="haut">Haut</button>-->
