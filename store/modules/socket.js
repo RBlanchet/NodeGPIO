@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 
 const state = {
-    socket: io('192.168.1.79:8080')
+    socket: io('192.168.1.129:8080')
 }
 
 // getters

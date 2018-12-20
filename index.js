@@ -14,8 +14,9 @@ const config = require('./config.json')
 
 // GPIO
 const GPIO = require('onoff').Gpio
-// Configuration des PINS
+// // Configuration des PINS
 const avancer = new GPIO(config.PINS.AVANCER, 'out')
+const reculer = new GPIO(config.PINS.RECULER, 'out')
 const moteur = new GPIO(config.PINS.MOTEUR, 'out')
 
 
@@ -34,16 +35,65 @@ io.on('connection', function(socket){
      * Fonction avancer
      */
     socket.on('AVANCER', () => {
-        console.log('Avancer')
-	moteur.writeSync(1)
+        moteur.writeSync(1)
         avancer.writeSync(1)
     })
     /**
      * Fonction stop avancer
      */
     socket.on('STOP_AVANCER', () => {
-        console.log('Arrêt Avancer')
-	moteur.writeSync(0)
+        moteur.writeSync(1)
         avancer.writeSync(0)
+    })
+    /**
+     * Fonction reculer
+     */
+    socket.on('RECULER', () => {
+        moteur.writeSync(1)
+        reculer.writeSync(1)
+    })
+    /**
+     * Fonction stop reculer
+     */
+    socket.on('STOP_RECULER', () => {
+        moteur.writeSync(1)
+        reculer.writeSync(0)
+    })
+    /**
+     * Fonction droite
+     */
+    socket.on('DROITE', () => {
+        // moteur.writeSync(1)
+        // reculer.writeSync(0)
+    })
+    /**
+     * Fonction stop droite
+     */
+    socket.on('STOP_DROITE', () => {
+        console.log('STOP_DROITE')
+        //moteur.writeSync(0)
+        //avancer.writeSync(0)
+    })
+    /**
+     * Fonction gauche
+     */
+    socket.on('GAUCHE', () => {
+        console.log('GAUCHE')
+        //moteur.writeSync(1)
+        //avancer.writeSync(1)
+    })
+    /**
+     * Fonction stop gauche
+     */
+    socket.on('STOP_GAUCHE', () => {
+        console.log('STOP_GAUCHE')
+        //moteur.writeSync(0)
+        //avancer.writeSync(0)
+    })
+    /**
+     * Fonction Arrêt
+     */
+    socket.on('ARRET', () => {
+        moteur.writeSync(0)
     })
 })
