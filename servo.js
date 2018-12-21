@@ -1,5 +1,9 @@
+const Gpio = require('pigpio').Gpio;
 
+const motor = new Gpio(6, {mode: Gpio.OUTPUT});
 
+let pulseWidth = 1000;
+let increment = 100;
 
 setInterval(() => {
   motor.servoWrite(pulseWidth);
