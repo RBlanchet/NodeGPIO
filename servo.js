@@ -1,19 +1,17 @@
-var piblaster = require('pi-servo-blaster.js');
-const MAX_ANGLE = 180;
-function angleToPercent(angle) {
-    return Math.floor((angle/MAX_ANGLE) * 100);
-}
+const Gpio = require('pigpio').Gpio;
 
-var curAngle = 0;
-var direction = 1;
+const motor = new Gpio(6, {mode: Gpio.OUTPUT});
+
+let pulseWidth = 1000;
+let increment = 100;
+
 setInterval(() => {
-    piblaster.setServoPwm("P1-11", angleToPercent(curAngle) + "%");
-    console.log("Setting angle at: ", curAngle, angleToPercent(curAngle));
-    curAngle += direction;
-    // Change direction when it exceeds the max angle.
-    if (curAngle >= MAX_ANGLE) {
-        direction = -1;
-    } else if (curAngle <= 0) {
-        direction = 1;
-    }
-}, 10);
+  motor.servoWrite(pulseWidth);
+
+  pulseWidth += increment;
+  if (pulseWidth >= 2000) {
+    increment = -100;
+  } else if (pulseWidth <= 1000) {
+    increment = 100;
+  }
+}, 100);
