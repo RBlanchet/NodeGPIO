@@ -1,7 +1,8 @@
+import config from './../../config.json'
 import io from 'socket.io-client'
 
 const state = {
-    socket: io('192.168.1.129:8080')
+    socket: io(`${config.IP_ADDRESS}:8080`)
 }
 
 // getters
