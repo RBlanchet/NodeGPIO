@@ -38,11 +38,11 @@ const piServor = require('pigpio').Gpio;
 const avancer = new GPIO(config.PINS.AVANCER, 'out')
 const reculer = new GPIO(config.PINS.RECULER, 'out')
 const moteur = new GPIO(config.PINS.MOTEUR, 'out')
-const servoMoteur = new piServor(config.PINS.SERVO, {mode: Gpio.OUTPUT})
+const servoMoteur = new piServor(config.PINS.SERVO, {mode: piServor.OUTPUT})
 
 // Configuration des position du Servo moteur
-const positionInitiale = config.SERVO.POSITION_INITIALE
-const incrementServo = config.SERVO.INCREMENT
+const _positionInitiale = config.SERVO.POSITION_INITIALE
+const _incrementServo = config.SERVO.INCREMENT
 
 function angleToPercent(angle) {
     return Math.floor((angle/180) * 100);
@@ -54,13 +54,15 @@ app.use('/dist', express.static('dist'))
 // Route de base
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/views/index.html'))
+    // Initialisation de la positon de départ
+    servoMoteur.servoWrite(_positionInitiale)
 })
 
 // A la connection d'un utilisateur sur le serveur Sockets
 io.on('connection', function(socket){
     console.log('Un utilisateur est connecté.')
     // Reinitialisation du Servo Moteur
-    servoMoteur.servoWrite(positionInitiale)
+    let positionInitiale = _positionInitiale
     // GPIO
     /**
      * Fonction avancer
@@ -94,15 +96,19 @@ io.on('connection', function(socket){
      * Fonction droite
      */
     socket.on('DROITE', () => {
-        setInterval(() => {
-            positionInitiale += incrementServo
-        }, 10)
+		if (positionInitiale <= _positionInitiale + config.SERVO.ANGLE_MAXIMAL) {
+			positionInitiale += _incrementServo
+			servoMoteur.servoWrite(positionInitiale)
+			console.log(positionInitiale)
+		} else {
+			console.log("Position depassé")
+		} 
     })
     /**
      * Fonction stop droite
      */
     socket.on('STOP_DROITE', () => {
-        console.log('STOP_DROITE')
+        //console.log('STOP_DROITE')
         //moteur.writeSync(0)
         //avancer.writeSync(0)
     })
@@ -110,15 +116,19 @@ io.on('connection', function(socket){
      * Fonction gauche
      */
     socket.on('GAUCHE', () => {
-        setInterval(() => {
-            positionInitiale -= incrementServo
-        }, 10)
+		if (positionInitiale >= _positionInitiale - 200) {
+			positionInitiale -= _incrementServo
+			servoMoteur.servoWrite(positionInitiale)
+			console.log(positionInitiale)
+		} else {
+			console.log("Position depassé")
+		} 
     })
     /**
      * Fonction stop gauche
      */
     socket.on('STOP_GAUCHE', () => {
-        console.log('STOP_GAUCHE')
+        //console.log('STOP_GAUCHE')
         //moteur.writeSync(0)
         //avancer.writeSync(0)
     })
@@ -126,6 +136,9 @@ io.on('connection', function(socket){
      * Fonction Arrêt
      */
     socket.on('ARRET', () => {
+		console.log('Arrête')
+		positionInitiale = _positionInitiale
+		servoMoteur.servoWrite(_positionInitiale)
         moteur.writeSync(0)
     })
 })
