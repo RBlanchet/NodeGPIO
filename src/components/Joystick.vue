@@ -5,6 +5,7 @@
 </template>
 
 <script>
+    // Lib du joystick
     const nippleJS = require('nipplejs')
 
     export default {
@@ -18,17 +19,10 @@
         },
         methods: {
             /**
-             * Arrêt du mouvement (Avancer)
+             * Initalise les options pour le joystick et retourne une promesse une fois que c'est initialisé
+             *
+             * @returns {Promise<any>}
              */
-            avancerUp() {
-                this.socket.emit('STOP_AVANCER');
-            },
-            /**
-             * Avance le robot
-             */
-            avancerDown() {
-                this.socket.emit('AVANCER');
-            },
             initJoystick() {
                 return new Promise(((resolve, reject) => {
                     if (Object.keys(this.options).length === 0 && this.options.constructor === Object) {

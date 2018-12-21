@@ -10,8 +10,10 @@ npm install
 
 ## Executer le script
 
+Cela executera Webpack ainsi que node. L'ip est detecter automatiquement et est affiché lorsque le
+serveur sera lancé.
 ```
-node mon_fichier.js
+npm run node
 ```
 
 ## Fonctionnement du Gpio module
