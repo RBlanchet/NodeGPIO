@@ -31,12 +31,18 @@ const config = require('./config.json')
 
 // GPIO
 const GPIO = require('onoff').Gpio
-const piblaster = require('pi-servo-blaster.js')
+const piServor = require('pigpio').Gpio;
+
 
 // Configuration des PINS
 const avancer = new GPIO(config.PINS.AVANCER, 'out')
 const reculer = new GPIO(config.PINS.RECULER, 'out')
 const moteur = new GPIO(config.PINS.MOTEUR, 'out')
+const servoMoteur = new piServor(config.PINS.SERVO, {mode: Gpio.OUTPUT})
+
+// Configuration des position du Servo moteur
+const positionInitiale = config.SERVO.POSITION_INITIALE
+const incrementServo = config.SERVO.INCREMENT
 
 function angleToPercent(angle) {
     return Math.floor((angle/180) * 100);
@@ -53,6 +59,8 @@ app.get('/', (req, res) => {
 // A la connection d'un utilisateur sur le serveur Sockets
 io.on('connection', function(socket){
     console.log('Un utilisateur est connecté.')
+    // Reinitialisation du Servo Moteur
+    servoMoteur.servoWrite(positionInitiale)
     // GPIO
     /**
      * Fonction avancer
@@ -86,8 +94,9 @@ io.on('connection', function(socket){
      * Fonction droite
      */
     socket.on('DROITE', () => {
-        // moteur.writeSync(1)
-        // reculer.writeSync(0)
+        setInterval(() => {
+            positionInitiale += incrementServo
+        }, 10)
     })
     /**
      * Fonction stop droite
@@ -101,9 +110,9 @@ io.on('connection', function(socket){
      * Fonction gauche
      */
     socket.on('GAUCHE', () => {
-        console.log('GAUCHE')
-        //moteur.writeSync(1)
-        //avancer.writeSync(1)
+        setInterval(() => {
+            positionInitiale -= incrementServo
+        }, 10)
     })
     /**
      * Fonction stop gauche
