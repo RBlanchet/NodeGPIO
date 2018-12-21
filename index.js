@@ -31,10 +31,16 @@ const config = require('./config.json')
 
 // GPIO
 const GPIO = require('onoff').Gpio
+const piblaster = require('pi-servo-blaster.js')
+
 // Configuration des PINS
 const avancer = new GPIO(config.PINS.AVANCER, 'out')
 const reculer = new GPIO(config.PINS.RECULER, 'out')
 const moteur = new GPIO(config.PINS.MOTEUR, 'out')
+
+function angleToPercent(angle) {
+    return Math.floor((angle/180) * 100);
+}
 
 // Vue.js
 app.use('/dist', express.static('dist'))
